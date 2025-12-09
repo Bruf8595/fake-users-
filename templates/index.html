@@ -1,0 +1,53 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fake User Generator</title>
+    <style>
+        body {font-family: Arial; margin: 40px; background: #f4f4f4;}
+        table {width: 100%; border-collapse: collapse; margin-top: 20px;}
+        th, td {border: 1px solid #ccc; padding: 10px; text-align: left;}
+        th {background: #333; color: white;}
+        form {background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+    </style>
+</head>
+<body>
+    <h1>Fake User Generator (SQL-only)</h1>
+    
+    <form method="POST">
+        Locale: 
+        <select name="locale">
+            <option value="en_US" {% if locale == 'en_US' %}selected{% endif %}>en_US (USA)</option>
+            <option value="de_DE" {% if locale == 'de_DE' %}selected{% endif %}>de_DE (Germany)</option>
+        </select>
+        &nbsp; Seed: <input type="number" name="seed" value="{{ seed }}" size="8">
+        &nbsp; <button type="submit">Generate</button>
+        &nbsp; <button type="submit" name="next" value="1">Next Batch →</button>
+    </form>
+
+    <p><b>Batch:</b> {{ batch_index }} | <b>Speed:</b> {{ speed }} users/sec</p>
+
+    <table>
+        <tr>
+            <th>Full Name</th>
+            <th>Address</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Coords</th>
+            <th>Height/Weight</th>
+            <th>Eyes</th>
+        </tr>
+        {% for u in users %}
+        <tr>
+            <td>{{ u.full_name }}</td>
+            <td>{{ u.address }}</td>
+            <td>{{ u.phone }}</td>
+            <td>{{ u.email }}</td>
+            <td>{{ u.lat|round(4) }}, {{ u.lon|round(4) }}</td>
+            <td>{{ u.height_cm }} cm / {{ u.weight_kg }} kg</td>
+            <td>{{ u.eye_color }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
