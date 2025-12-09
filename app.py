@@ -1,4 +1,4 @@
-# app.py — ФІКС для 4 аргументів
+
 from flask import Flask, render_template, request
 import psycopg2
 import time

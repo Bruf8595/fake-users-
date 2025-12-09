@@ -1,4 +1,3 @@
--- procedures.sql — ОСТАННІЙ ФАЙЛ НАЗАВЖДИ (ВСЕ РІЗНЕ, ОЧІ РІЗНІ)
 
 DROP FUNCTION IF EXISTS rnd(BIGINT, INT) CASCADE;
 DROP FUNCTION IF EXISTS normal(FLOAT, FLOAT, BIGINT, INT) CASCADE;
