@@ -1,17 +1,17 @@
 
+
 from flask import Flask, render_template, request
 import psycopg2
+import os
 import time
 
 app = Flask(__name__)
 
-conn = psycopg2.connect(
-    dbname="fake_users",
-    user="postgres",
-    password="Programer123",
-    host="localhost",
-    port="5432"
-)
+
+DATABASE_URL = os.environ.get('DATABASE_URL') or \
+               'postgresql://postgres:Programer123@localhost:5432/fake_users'
+
+conn = psycopg2.connect(DATABASE_URL, sslmode='require' if 'neon.tech' in DATABASE_URL else 'prefer')
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -25,21 +25,20 @@ def index():
     start_time = time.time()
 
     cur = conn.cursor()
-    cur.execute("SELECT user_json FROM generate_batch(%s, %s, %s, %s)", (locale, seed, batch_index, 10))
+    cur.execute("SELECT user_json FROM generate_batch(%s, %s, %s, 10)",
+                (locale, seed, batch_index))
     users = [row[0] for row in cur.fetchall()]
     cur.close()
 
     duration = time.time() - start_time
-    speed = 10 / duration if duration > 0 else 0
+    speed = round(10 / duration if duration > 0 else 0, 1)
 
-    return render_template(
-        "index.html",
-        users=users,
-        locale=locale,
-        seed=seed,
-        batch_index=batch_index,
-        speed=round(speed, 2)
-    )
+    return render_template("index.html",
+                           users=users,
+                           locale=locale,
+                           seed=seed,
+                           batch_index=batch_index,
+                           speed=speed)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
